@@ -1,4 +1,10 @@
 
+// if (sampleBlogData.title === undefined || typeof(sampleBlogData.title) !== "string") {
+//     return {
+//                 isValid: false,
+//                 message: "title is required and must be string"
+//         }
+
 // if (sampleBlogData.text === undefined || typeof(sampleBlogData.text) !== "string") {
     
 //     return {
@@ -8,7 +14,7 @@
 // }
 
 // if (sampleBlogData.author === undefined || typeof(sampleBlogData.author) !== "string") {
-//     // lastName is required and it must be a string
+//    
 //     return {
 //         isValid: false,
 //         message: "Author required and  must be a string"
@@ -17,4 +23,4 @@
 // module.exports = {
 	
 // 	validateBlogs, 
-// }
+ }
