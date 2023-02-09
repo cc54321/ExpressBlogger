@@ -4,6 +4,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+
+//loads the contents of config.env
+require("dotenv").config();
+
+var { mongoConnect } = require('./mongo.js');
+mongoConnect();
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const blogsRouter = require('./routes/blogs');
@@ -18,6 +25,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+//hosting site files
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
