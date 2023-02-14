@@ -37,15 +37,21 @@ router.get('/', async function(req, res, next) {
   .collection('sample_blog')
   .find({})
   .limit(5)
-  .toArray(function (err, result) {
-    });
+  .toArray();
+  
+  if (allBlogs.legnth == 0){
+    throw error("No blog post found");
+  }
 
-    res.json({
+   res.json({
       success: true,
       blogs: allBlogs
     });
 
-});
+ });
+
+ 
+
 // router.get("/all", (req, res) => {
 //     res.json({sucess: true, route: "sampleBlogs", message:"list of all blogs",blogs:sampleBlogs});
 // });
@@ -65,33 +71,37 @@ router.get('/', async function(req, res, next) {
 
 
 
-router.get('/get-one/:blogTitle', async function(req, res, next) {
+router.get("/get-one-blog", async function(req, res, next) {
 
   const blogPost = await db()
   .collection("Sample_Blog")
-  .findOne({title: req.params.blogTitle,})
+  .findOne({
+    id: {
+      $exists: true,
+    }
 
-  
+  })
+
+  console.log(blogPost);
 
     res.json({
       sucess:true,
-      blogs: blogTitle
+      blogs: blogPost
     });
+  })
 
-
-});
 ///get-one/:id (GET): returns one blog post given an id
 router.get('/get-one/:id', async function(req, res, next) {
 
-  const getId = await db()
+  const blogPost = await db()
   .collection("Sample_Blog")
-  .findOne({id: req.params.id,})
+  .findOne({id: req.params.id,});
 
   
 
     res.json({
       sucess:true,
-      blogs: getId
+      blogs: blogPost
     });
 
     
@@ -113,91 +123,112 @@ router.get('/get-one/:id', async function(req, res, next) {
 
 //create-one/ (POST): creates one blog post
 
-router.post("/create-one/post", async function(req, res, next) {
+router.post("/create-one", async function(req, res, next) {
 
-     const blogPost = req.body.blogPost
-     const blogTitle = req.body.blogTitle
-     const blogText = req.body.blogText
-     const blogAuthor = req.body.blogAuthor
+     const newPost = {
 
-      const BlogData = {
-      blogTitle: blogTitle,
-      blogText: blogText,
-      blogAuthor: blogAuthor,
+      id: uuidv4(),
       createdAt: new Date(),
-      lastModified: new Date(),
+      title: req.body.title,
+      text: req.body.text,
+      author: req.body.author,
+      email: req.body.email,
+      categories: req.body.categories,
+      starRating: Number(req.body.starRating),
+    };
 
-     }
+         console.log(newPost);
 
-     const createPost = await db()
-     .collection("sample-blog")
-     .insertOne(BlogData, function (err, result){
+         res.json({
+      success: true,
+      newPost,
+    });
+})
+  
 
-     })
+//      const blogPost = req.body.blogPost
+//      const blogTitle = req.body.blogTitle
+//      const blogText = req.body.blogText
+//      const blogAuthor = req.body.blogAuthor
 
-    //  sampleBlogs.push(sampleBlogData)
+//       const BlogData = {
+//       blogTitle: blogTitle,
+//       blogText: blogText,
+//       blogAuthor: blogAuthor,
+//       createdAt: new Date(),
+//       lastModified: new Date(),
 
-     res.json({
-       success: true,
-       blogs: createPost
+//      }
+
+//      const createPost = await db()
+//      .collection("sample-blog")
+//      .insertOne(BlogData, function (err, result){
+
+//      })
+
+//     //  sampleBlogs.push(sampleBlogData)
+
+//      res.json({
+//        success: true,
+//        blogs: createPost
        
 
-})
+// })
 
-})
+// })
 
 
-router.post("/blogs/create-one", (req, res)=>{
-    if (req.body.blogTitle === undefined || typeof(req.body.blogTitle) !== "string"){
-      res.json({
-        success: false,
-        message: "blog title is reqiured and must be a string"
-      })
-      return
-    }
-    if (req.body.blogText === undefined || typeof(req.body.blogText) !== "string"){
-      res.json({
-        success: false,
-        message: "blog text is required and must be a string"
-      })
-      return 
-    }
-    if (req.body.blogAuthor === undefined || typeof(req.body.blogAuthor) !== "string"){
-       res.json({
-        success: false,
-        message: "author is required and must be a string"
-       })
-       return 
-    } 
+// router.post("/blogs/create-one", (req, resr)=>{
+//     if (req.body.blogTitle === undefined || typeof(req.body.blogTitle) !== "string"){
+//       res.json({
+//         success: false,
+//         message: "blog title is reqiured and must be a string"
+//       })
+//       return
+//     }
+//     if (req.body.blogText === undefined || typeof(req.body.blogText) !== "string"){
+//       res.json({
+//         success: false,
+//         message: "blog text is required and must be a string"
+//       })
+//       return 
+//     }
+//     if (req.body.blogAuthor === undefined || typeof(req.body.blogAuthor) !== "string"){
+//        res.json({
+//         success: false,
+//         message: "author is required and must be a string"
+//        })
+//        return 
+//     } 
       
      
-     const blogTitle = req.body.blogTitle
-     const blogText = req.body.blogText
-     const blogAuthor = req.body.blogAuthor
+//      const blogTitle = req.body.blogTitle
+//      const blogText = req.body.blogText
+//      const blogAuthor = req.body.blogAuthor
 
-     const sampleBlogData = {
-      blogTitle: blogTitle,
-      blogText: blogText,
-      blogAuthor: blogAuthor,
-      createdAt: new Date(),
-      lastModified: new Date(),
+//      const sampleBlogData = {
+//       blogTitle: blogTitle,
+//       blogText: blogText,
+//       blogAuthor: blogAuthor,
+//       createdAt: new Date(),
+//       lastModified: new Date(),
 
-     }
+//      }
 
-     sampleBlogs.push(sampleBlogData)
+//      sampleBlogs.push(sampleBlogData)
 
-     res.json({
-       success: true,
+//      res.json({
+//        success: true,
        
   
 
-  })
+//   })
    
   
   
 
       
-    })
+//     })
 
 router.put('/update-one/:blogTitle', (req, res)=>{
     const sampleBlogToFind = req.params.blogTitle
@@ -255,8 +286,30 @@ router.put('/update-one/:blogTitle', (req, res)=>{
     })
 
 
-  
+    // router.delete('/delete-multi', async function (req, res) {
+      
+router.delete('/delete-multi', async function (req, res) {
+	try {
+      
+      const idsToDelete = req.body
 
+      if (idsToDelete.length < 1){
+        throw Error("ids to delete empty!");
+      }
+      const deleteResult = await db().collection("sample_blogs").deleteMany({
+        id: {
+          $in: idsToDelete
+        }
+      })
+  
+  } catch (e) {
+    res.send(e);
+  }
+	res.json({
+		success: true,
+		deleteResult: deleteResult
+	})
+})
 
 router.delete("/delete/:title",function(req,res){
   const blogTitleToDelete = req.params.title
