@@ -3,7 +3,8 @@ const express = require('express');
 const router = express.Router();
 
 const { validateBlogs } = require("../validation/blogs");
-const {db} = require("../mongo")
+const {db} = require("../mongo");
+const { Db } = require('mongodb');
 
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
@@ -25,20 +26,126 @@ router.get('/', async function(req, res, next) {
 });
 
 
-router.get("/all", (req, res) => {
-    res.json({sucess: true, route: "sampleBlogs", message:"list of all blogs",blogs:sampleBlogs});
+//  router.get("/all", (req, res) => {
+//      res.json({sucess: true, route: "Sample-Blog", message:"list of all blogs",blogs:Sample-Blog});
+//  });
+
+
+ router.get('/all', async function(req, res, next) {
+
+  const allBlogs = await db()
+  .collection('sample_blog')
+  .find({})
+  .limit(5)
+  .toArray(function (err, result) {
+    });
+
+    res.json({
+      success: true,
+      blogs: allBlogs
+    });
+
+});
+// router.get("/all", (req, res) => {
+//     res.json({sucess: true, route: "sampleBlogs", message:"list of all blogs",blogs:sampleBlogs});
+// });
+
+//router.get("/single/:title",function (req, res){
+// router.get("/single/:title",function (req, res){
+//   const singleblog = sampleBlogs.find((blog)=>{
+//     return blog.title === req.params.title
+    
+
+//   })
+//   res.json({
+//     success: true,
+//     blog: singleblog
+//   })
+// })
+
+
+
+router.get('/get-one/:blogTitle', async function(req, res, next) {
+
+  const blogPost = await db()
+  .collection("Sample_Blog")
+  .findOne({title: req.params.blogTitle,})
+
+  
+
+    res.json({
+      sucess:true,
+      blogs: blogTitle
+    });
+
+
+});
+///get-one/:id (GET): returns one blog post given an id
+router.get('/get-one/:id', async function(req, res, next) {
+
+  const getId = await db()
+  .collection("Sample_Blog")
+  .findOne({id: req.params.id,})
+
+  
+
+    res.json({
+      sucess:true,
+      blogs: getId
+    });
+
+    
+
 });
 
-router.get("/single/:title",function (req, res){
-  const singleblog = sampleBlogs.find((blog)=>{
-    return blog.title === req.params.title
+// router.get("get-one/:blogTitle",function (req, res){
+//      const getOneBlog = sampleBlog.collection
+//      const blogTitle = sampleBlog.find((blog)=>{
+//       return blogTitle === req.params.title
+//      })
+   
+//      res.json({
+//            success: true,
+//            blog: getOneBlog
+//          })
 
-  })
-  res.json({
-    success: true,
-    blog: singleblog
-  })
+// })
+
+//create-one/ (POST): creates one blog post
+
+router.post("/create-one/post", async function(req, res, next) {
+
+     const blogPost = req.body.blogPost
+     const blogTitle = req.body.blogTitle
+     const blogText = req.body.blogText
+     const blogAuthor = req.body.blogAuthor
+
+      const BlogData = {
+      blogTitle: blogTitle,
+      blogText: blogText,
+      blogAuthor: blogAuthor,
+      createdAt: new Date(),
+      lastModified: new Date(),
+
+     }
+
+     const createPost = await db()
+     .collection("sample-blog")
+     .insertOne(BlogData, function (err, result){
+
+     })
+
+    //  sampleBlogs.push(sampleBlogData)
+
+     res.json({
+       success: true,
+       blogs: createPost
+       
+
 })
+
+})
+
 
 router.post("/blogs/create-one", (req, res)=>{
     if (req.body.blogTitle === undefined || typeof(req.body.blogTitle) !== "string"){
