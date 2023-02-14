@@ -288,7 +288,28 @@ router.put('/update-one/:blogTitle', (req, res)=>{
 
     // router.delete('/delete-multi', async function (req, res) {
       
+router.delete('/delete-multi', async function (req, res) {
+	try {
+      
+      const idsToDelete = req.body
 
+      if (idsToDelete.length < 1){
+        throw Error("ids to delete empty!");
+      }
+      const deleteResult = await db().collection("sample_blogs").deleteMany({
+        id: {
+          $in: idsToDelete
+        }
+      })
+  
+  } catch (e) {
+    res.send(e);
+  }
+	res.json({
+		success: true,
+		deleteResult: deleteResult
+	})
+})
 
 router.delete("/delete/:title",function(req,res){
   const blogTitleToDelete = req.params.title
